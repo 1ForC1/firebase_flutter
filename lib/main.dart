@@ -1,9 +1,17 @@
+//flutter run -d edge --web-renderer html
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_firebase/menu.dart';
 import 'package:flutter_firebase/reg.dart';
+import 'create_finance.dart';
+import 'finance_list.dart';
 import 'firebase_options.dart';
+import 'profile.dart';
+import 'update_finance.dart';
+import 'update_profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,11 +32,27 @@ class MyApp extends StatelessWidget {
               title: 'Авторизация',
             ),
         'reg': (context) => Reg(),
+        'finance_list': (context) => const FinanceList(
+              title: 'Список финансов',
+            ),
+        'profile': (context) => const Profile(
+              title: 'Профиль',
+            ),
         'menu': (context) => Menu(),
+        'update_profile': (context) => const UpdateProfile(
+              title: 'Редактирование профиля',
+            ),
+        'create_finance': (context) => const CreateFinance(
+              title: 'Добавление финансов',
+            ),
+        'update_finance': (context) => const UpdateFinance(
+              title: 'Изменение финансов',
+            )
       },
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.amber,
+          scaffoldBackgroundColor: Color(0xffffecb3)),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Firebase'),
     );
   }
@@ -150,35 +174,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ],
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          InkWell(
-            onTap: () async {
-              final FirebaseAuth user = FirebaseAuth.instance;
-              try {
-                user.sendSignInLinkToEmail(
-                  email: email,
-                  actionCodeSettings: ActionCodeSettings(
-                      url: "https://superduperauth.page.link/rniX",
-                      androidMinimumVersion: "16",
-                      androidPackageName: "com.example.app",
-                      iOSBundleId: "com.example.app",
-                      androidInstallApp: true,
-                      handleCodeInApp: true),
-                );
-
-                Navigator.pushNamed(
-                  context,
-                  'menu',
-                );
-              } catch (e) {
-                print(e.toString());
-              }
-            },
-            child: const Text('Забыли пароль? Войти через почту',
-                style: TextStyle(decoration: TextDecoration.underline)),
           ),
           const SizedBox(
             height: 20,

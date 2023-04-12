@@ -1,5 +1,12 @@
+import 'dart:html';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
+
+final db = FirebaseFirestore.instance;
+final auth = FirebaseAuth.instance;
 
 class Reg extends StatefulWidget {
   Reg({Key? key}) : super(key: key);
@@ -28,13 +35,13 @@ class _RegState extends State<Reg> {
               },
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Поле логин пустое';
+                  return 'Поле почта пустое';
                 }
                 return null;
               },
               maxLength: 50,
               decoration: const InputDecoration(
-                labelText: 'Логин',
+                labelText: 'Почта',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -68,11 +75,21 @@ class _RegState extends State<Reg> {
           ElevatedButton(
             child: const Text("Регистрация"),
             onPressed: () async {
-              final auth = FirebaseAuth.instance;
               try {
+                final user = <String, dynamic>{
+                  "email": email,
+                  "password": password
+                };
+
+                CollectionReference usersTable =
+                    FirebaseFirestore.instance.collection('users');
+
+                usersTable.doc(email).set(user);
+
                 UserCredential userCredential =
                     await auth.createUserWithEmailAndPassword(
                         email: email, password: password);
+
                 Navigator.pushNamed(
                   context,
                   'auth',

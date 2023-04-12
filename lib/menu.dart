@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'finance_list.dart';
+import 'profile.dart';
+
+
 class Menu extends StatefulWidget {
   Menu({Key? key}) : super(key: key);
 
@@ -28,27 +32,42 @@ class _MenuState extends State<Menu> {
       super.initState();
   }
 
+  int currentIndex = 0;
+
+    final listPage = [
+    const FinanceList(
+      title: 'Список финансов',
+    ),
+    const Profile(
+      title: 'Профиль',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: const Text("Выход"),
-              onPressed: () async {
-                await _auth.signOut();
-                Navigator.pushNamed(
-                  context,
-                  'auth',
-                );
-              },
-            ),
-            Text("email: ${email}, id: ${uid}")
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xffffb300),
+        unselectedItemColor: Colors.black45,
+        selectedItemColor: Colors.black,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        currentIndex: currentIndex,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.money),
+            label: 'Список финансов',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Профиль',
+          ),
+        ],
       ),
+      body: listPage[currentIndex]
     );
   }
 }
